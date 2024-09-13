@@ -1,10 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
-import contactRoutes from './routes/contactRoutes.js'; // Contact routes
-import projectRoutes from './routes/projectRoutes.js'; // Project routes
-import blogRoutes from './routes/blogRoutes.js'; // Blog routes
-import authRoutes from './routes/authRoutes.js'; // Auth routes
+import contactRoutes from './routes/contactRoutes.js';
+import projectRoutes from './routes/projectRoutes.js';
+import blogRoutes from './routes/blogRoutes.js';
+import passport from 'passport';
+import session from 'express-session';
+import { googleStrategy } from './config/passport.js'; // Passport Google Strategy
+import authRoutes from './routes/authRoutes.js';
+
 
 dotenv.config();
 
@@ -16,11 +20,28 @@ app.use(express.json());
 // Connect to MongoDB
 connectDB();
 
+// Express Session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'secret',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+// Initialize Passport and session
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Google Strategy
+googleStrategy(passport);
+
 // Use routes
-app.use('/api', contactRoutes); // Contact routes
-app.use('/api/projects', projectRoutes); // Project routes
-app.use('/api/blogs', blogRoutes); // Blog routes
-app.use('/api/auth', authRoutes); // Auth routes
+app.use('/api', contactRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/blogs', blogRoutes);
+
+app.use(authRoutes);
 
 // Example route
 app.get('/', (req, res) => {
