@@ -4,6 +4,7 @@ import connectDB from './config/db.js';
 import contactRoutes from './routes/contactRoutes.js'; // Contact routes
 import projectRoutes from './routes/projectRoutes.js'; // Project routes
 import blogRoutes from './routes/blogRoutes.js'; // Blog routes
+import authRoutes from './routes/authRoutes.js'; // Auth routes
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ connectDB();
 app.use('/api', contactRoutes); // Contact routes
 app.use('/api/projects', projectRoutes); // Project routes
 app.use('/api/blogs', blogRoutes); // Blog routes
+app.use('/api/auth', authRoutes); // Auth routes
 
 // Example route
 app.get('/', (req, res) => {
