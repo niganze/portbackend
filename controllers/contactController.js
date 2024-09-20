@@ -21,7 +21,6 @@ export const sendContactEmail = async (req, res) => {
     });
 
     await newContact.save();
-    
 
     // Set up the email transporter using Nodemailer
     let transporter = nodemailer.createTransport({
@@ -32,9 +31,10 @@ export const sendContactEmail = async (req, res) => {
       },
     });
 
-    let mailOptions = {
+    // Email to the admin (yourself)
+    let adminMailOptions = {
       from: email,
-      to: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER, // Admin's email
       subject: `New Contact: ${subject}`,
       text: `
         You have a new contact submission:
@@ -46,9 +46,32 @@ export const sendContactEmail = async (req, res) => {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    // Send email to admin
+    await transporter.sendMail(adminMailOptions);
 
-    res.status(200).json({ message: 'Your message was sent successfully!' });
+    // Email to the client (confirmation email)
+    let clientMailOptions = {
+      from: process.env.EMAIL_USER, // Admin's email to send confirmation
+      to: email, // Client's email
+      subject: 'Thank you for contacting us!',
+      text: `
+        Hi ${name},
+
+        Thank you for reaching out to us. We have received your message regarding "${subject}" and will get back to you as soon as possible.
+
+        Here is a copy of your message:
+        
+        "${message}"
+
+        Best regards,
+        Alain Niganze
+      `,
+    };
+
+    // Send confirmation email to client
+    await transporter.sendMail(clientMailOptions);
+
+    res.status(200).json({ message: 'Your message was sent successfully, and a confirmation email has been sent to you!' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'There was an error sending the email.' });

@@ -6,7 +6,7 @@ const contactSchema = new mongoose.Schema({
   subject: { type: String, required: true },
   message: { type: String, required: true },
 }, {
-  timestamps: true, // Adds createdAt and updatedAt fields
+  timestamps: true, 
 });
 const Contact = mongoose.model('Contact', contactSchema);
 
