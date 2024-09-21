@@ -8,7 +8,7 @@ import passport from 'passport';
 import session from 'express-session';
 import { googleStrategy } from './config/passport.js'; // Passport Google Strategy
 import authRoutes from './routes/authRoutes.js';
-
+import cors from "cors";
 
 dotenv.config();
 
@@ -16,6 +16,18 @@ const app = express();
 
 // Middleware to parse JSON
 app.use(express.json());
+const corsOptions = {
+  origin: [
+    "http://localhost:5173/",
+    "https://port1-dun.vercel.app/",
+    
+  ],
+  optionsSuccessStatus: 200,
+  credentials: true,
+};
+
+// Use CORS middleware with options
+app.use(cors(corsOptions));
 
 // Connect to MongoDB
 connectDB();
