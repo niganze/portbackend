@@ -6,7 +6,7 @@ import projectRoutes from './routes/projectRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
 import passport from 'passport';
 import session from 'express-session';
-import { googleStrategy } from './config/passport.js'; // Passport Google Strategy
+import { googleStrategy } from './config/passport.js'; 
 import authRoutes from './routes/authRoutes.js';
 import cors from "cors";
 

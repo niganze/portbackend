@@ -19,6 +19,7 @@ export const googleStrategy = (passport) => {
               email: profile.emails[0].value,
               googleId: profile.id,
               // You can add more user details here if needed
+              
             });
             await user.save();
           }
