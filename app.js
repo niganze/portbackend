@@ -19,6 +19,7 @@ app.use(express.json());
 const corsOptions = {
   origin: [
     "http://localhost:5173",
+    "https://portbackend-it4o.onrender.com",
     "https://niganzealain.vercel.app",
     
   ],
