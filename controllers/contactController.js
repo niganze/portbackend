@@ -78,3 +78,29 @@ export const sendContactEmail = async (req, res) => {
   }
 };
 
+// Function to get all messages
+export const getAllMessages = async (req, res) => {
+  try {
+    const messages = await Contact.find();
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to retrieve messages.' });
+  }
+};
+
+// Function to delete a message by ID
+export const deleteMessage = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedMessage = await Contact.findByIdAndDelete(id);
+    if (!deletedMessage) {
+      return res.status(404).json({ message: 'Message not found.' });
+    }
+    res.status(200).json({ message: 'Message deleted successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to delete message.' });
+  }
+};
