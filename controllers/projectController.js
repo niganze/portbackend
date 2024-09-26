@@ -1,21 +1,52 @@
 import Project from '../models/Project.js';
+import uploadCloudinary from '../utils/cloudinary.js';
 
 // Create new project
 export const createProject = async (req, res) => {
-  const { title, description, image, techStack } = req.body;
+  const { title, description, techStack } = req.body;
 
-  if (!title || !description || !image || !techStack) {
+  // Validate request body
+  if (!title || !description || !techStack) {
     return res.status(400).json({ message: 'Please fill in all fields.' });
   }
 
+  let project_images = [];
+
   try {
-    const project = new Project({ title, description, image, techStack });
+    // Check if image files are provided
+    if (req.files && req.files.image) {
+      console.log("Images provided.");
+
+      // Upload each image to Cloudinary
+      for (const file of req.files.image) {
+        const uploadedImageUrl = await uploadCloudinary(file);
+        project_images.push(uploadedImageUrl); // Add each uploaded image URL to the array
+      }
+
+      console.log("Uploaded image URLs:", project_images);
+    } else {
+      console.log("No images provided.");
+    }
+
+    // Create new project with the uploaded images or an empty array
+    const project = new Project({
+      title,
+      description,
+      image: project_images, // Save all uploaded image URLs
+      techStack: techStack.split(',') // Assuming techStack is a comma-separated string
+    });
+
+    // Save project to the database
     const savedProject = await project.save();
     res.status(201).json(savedProject);
+
   } catch (error) {
+    console.error('Error creating project:', error);
     res.status(500).json({ message: 'Error creating project' });
   }
 };
+
+
 
 // Get all projects
 export const getAllProjects = async (req, res) => {

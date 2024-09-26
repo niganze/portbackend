@@ -3,22 +3,22 @@ import mongoose from 'mongoose';
 const projectSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    required: false,
   },
   description: {
     type: String,
-    required: true,
+    required: false,
   },
   image: {
-    type: String,
-    required: true, // URL for project image
+    type: [String],
+    required: false, // URL for project image
   },
   techStack: {
     type: [String], // Array of technologies used
-    required: true,
+    required: false,
   },
 }, {
-  timestamps: true, // adds createdAt and updatedAt fields
+  timestamps: false, // adds createdAt and updatedAt fields
 });
 
 const Project = mongoose.model('Project', projectSchema);

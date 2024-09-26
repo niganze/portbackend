@@ -8,8 +8,10 @@ import passport from 'passport';
 import session from 'express-session';
 import { googleStrategy } from './config/passport.js'; 
 import authRoutes from './routes/authRoutes.js';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 import cors from "cors";
-
+const swaggerDocument = YAML.load('./documentation.yaml');
 dotenv.config();
 
 const app = express();
@@ -29,7 +31,7 @@ const corsOptions = {
 
 // Use CORS middleware with options
 app.use(cors(corsOptions));
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Connect to MongoDB
 connectDB();
 
