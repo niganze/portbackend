@@ -94,7 +94,7 @@ export const updateBlogPost = async (req, res) => {
   }
 };
 
-// Delete a blog post
+
 // Delete a blog post
 export const deleteBlogPost = async (req, res) => {
   try {
