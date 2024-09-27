@@ -1,21 +1,42 @@
 import Blog from '../models/Blog.js';
+import uploadCloudinary from '../utils/cloudinary.js';
+
 
 // Create new blog post
 export const createBlogPost = async (req, res) => {
-  const { title, description, image, owner } = req.body;
+  const { title, description, owner } = req.body;
 
-  if (!title || !description || !image || !owner) {
+  if (!title || !description || !owner) {
     return res.status(400).json({ message: 'Please fill in all required fields.' });
   }
 
+  // Check if there's an image uploaded
+  if (!req.files || !req.files.image || req.files.image.length === 0) {
+    return res.status(400).json({ message: 'Please upload an image.' });
+  }
+
   try {
-    const blogPost = new Blog({ title, description, image, owner });
+
+    const imageUrl = await uploadCloudinary(req.files.image[0]);
+    
+    
+    // Create the blog post with the image URL from Cloudinary
+    const blogPost = new Blog({
+      title,
+      description,
+      image: imageUrl, 
+      owner,
+    });
+
     const savedPost = await blogPost.save();
     res.status(201).json(savedPost);
   } catch (error) {
-    res.status(500).json({ message: 'Error creating blog post' });
+     console.log('error creating blog posts', error);
+     
+    res.status(500).json({ message: 'Error creating blog post', error:error.message });
   }
 };
+
 
 // Get all blog posts
 export const getAllBlogPosts = async (req, res) => {

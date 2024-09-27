@@ -1,10 +1,11 @@
 import express from 'express';
 import { createBlogPost, getAllBlogPosts, getBlogPostById, updateBlogPost, deleteBlogPost, addComment, getAllComments, deleteComment } from '../controllers/blogController.js';
+import { uploaded } from '../utils/multer.js';
 
 const router = express.Router();
 
 // POST request to create a blog post
-router.post('/', createBlogPost);
+router.post('/', uploaded, createBlogPost);
 
 // GET request to get all blog posts
 router.get('/', getAllBlogPosts);
