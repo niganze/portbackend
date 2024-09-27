@@ -14,7 +14,7 @@ router.get('/', getAllBlogPosts);
 router.get('/:id', getBlogPostById);
 
 // PUT request to update a blog post
-router.put('/:id', updateBlogPost);
+router.put('/:id', uploaded, updateBlogPost);
 
 // DELETE request to delete a blog post
 router.delete('/:id', deleteBlogPost);

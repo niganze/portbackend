@@ -66,7 +66,7 @@ export const getBlogPostById = async (req, res) => {
 
 // Update a blog post
 export const updateBlogPost = async (req, res) => {
-  const { title, description, image, owner } = req.body;
+  const { title, description,  owner } = req.body;
 
   try {
     const blog = await Blog.findById(req.params.id);
@@ -76,8 +76,16 @@ export const updateBlogPost = async (req, res) => {
 
     blog.title = title || blog.title;
     blog.description = description || blog.description;
-    blog.image = image || blog.image;
     blog.owner = owner || blog.owner;
+
+       // Check if there's a new image uploaded
+    if (req.files && req.files.image && req.files.image.length > 0) {
+      // Upload the new image to Cloudinary
+      const imageUrl = await uploadCloudinary(req.files.image[0]);
+
+      // Replace the old image with the new one
+      blog.image = imageUrl;
+    }
 
     const updatedBlog = await blog.save();
     res.status(200).json(updatedBlog);
@@ -87,15 +95,22 @@ export const updateBlogPost = async (req, res) => {
 };
 
 // Delete a blog post
+// Delete a blog post
 export const deleteBlogPost = async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    // Use findByIdAndDelete for direct deletion
+    const blog = await Blog.findByIdAndDelete(req.params.id);
+
+    // If the blog post is not found
     if (!blog) {
       return res.status(404).json({ message: 'Blog post not found' });
     }
-    await blog.remove();
+
+    // Successful deletion
     res.status(200).json({ message: 'Blog post deleted successfully' });
   } catch (error) {
+    // Log error to understand more
+    console.error('Error deleting blog post:', error);
     res.status(500).json({ message: 'Error deleting blog post' });
   }
 };
